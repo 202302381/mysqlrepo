@@ -1,1 +1,74 @@
 
+/*crear la base de datos*/
+CREATE DATABASE bancos;
+
+/*usar la base de datos creada*/
+USE bancos;
+
+/*crear las tablas*/
+CREATE TABLE cuentas (
+    cuenta VARCHAR(10) PRIMARY KEY,
+    totalCreditos DECIMAL(10,2) DEFAULT 0.00,
+    totalDebitos DECIMAL(10,2) DEFAULT 0.00,
+    saldo DECIMAL(10,2) DEFAULT 0.00
+);
+
+CREATE TABLE transacciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cuenta VARCHAR(10),
+    fecha DATE,
+    credito DECIMAL(10,2) DEFAULT 0.00,
+    debito DECIMAL(10,2) DEFAULT 0.00,
+    FOREIGN KEY (cuenta) REFERENCES cuentas(cuenta)
+);
+
+/*insertar datos en las cuentas*/
+INSERT INTO cuentas (cuenta, totalCreditos, totalDebitos, saldo) VALUES 
+('20010001', 0, 0, 0),
+('20010002', 0, 0, 0),
+('20010003', 0, 0, 0),
+('20010004', 0, 0, 0),
+('20010005', 0, 0, 0);
+
+/*creacion de procedimiento almacenado*/
+DELIMITER $$
+
+DROP PROCEDURE IF EXISTS registrar_transaccion $$  /*este comando elimina el proceso en caso que exista*/
+
+CREATE PROCEDURE registrar_transaccion(
+    IN p_cuenta VARCHAR(10),
+    IN p_fecha DATE,
+    IN p_credito DECIMAL(10,2),
+    IN p_debito DECIMAL(10,2)
+)
+BEGIN
+    /*Insertar la transacción en la tabla 'transacciones'*/
+    INSERT INTO transacciones (cuenta, fecha, credito, debito)
+    VALUES (p_cuenta, p_fecha, p_credito, p_debito);
+
+    /*Actualizar la tabla 'cuentas' con los nuevos valores*/
+    UPDATE cuentas 
+    SET 
+        totalCreditos = totalCreditos + p_credito,
+        totalDebitos = totalDebitos + p_debito,
+        saldo = saldo + p_credito - p_debito
+    WHERE cuenta = p_cuenta;
+END $$
+
+
+/*sentencia de ejecucion del procedimiento almacenado*/
+
+DELIMITER ;
+
+
+/*ejecucion del procedimiento almacenado*/
+CALL registrar_transaccion('20010001', '2024-03-07', 800.00, 0.00);
+CALL registrar_transaccion('20010002', '2024-03-07', 560.00, 0.00);
+CALL registrar_transaccion('20010003', '2024-03-07', 256.00, 0.00);
+CALL registrar_transaccion('20010004', '2024-03-07', 15000.00, 0.00);
+CALL registrar_transaccion('20010005', '2024-03-07', 256.00, 0.00);
+
+/* verificacion de los datos*/
+
+SELECT * FROM transacciones;
+SELECT * FROM cuentas;
