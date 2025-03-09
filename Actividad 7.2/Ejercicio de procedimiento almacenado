@@ -64,7 +64,7 @@ DELIMITER ;
 /*ejecucion del procedimiento almacenado*/
 CALL registrar_transaccion('20010001', '2024-03-07', 800.00, 0.00);
 CALL registrar_transaccion('20010002', '2024-03-07', 560.00, 0.00);
-CALL registrar_transaccion('20010003', '2024-03-07', 256.00, 0.00);
+CALL registrar_transaccion('20010003', '2024-03-07', 1254.00, 0.00);
 CALL registrar_transaccion('20010004', '2024-03-07', 15000.00, 0.00);
 CALL registrar_transaccion('20010005', '2024-03-07', 256.00, 0.00);
 
